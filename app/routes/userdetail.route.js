@@ -1,13 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const userdetailController = require('../controllers/userdetail.controller');
+const userDetailController = require('../controllers/userdetail.controller');
 
+router.get('/',userDetailController.getAllUserDetail);
+router.get('/:id',userDetailController.getSingleUserDetail);
+router.post('/',userDetailController.createUserDetail);
+router.put('/',userDetailController.updateUserDetail);
 
-router.get('/', userdetailController.getAllUserDetail );
-router.get('/:id', userdetailController.getSingleUserDetail );
-router.post('/', userdetailController.createUserDetail );
-router.put('/', userdetailController.updateUserDetail );
-router.delete('/', userdetailController.deleteUserDetail );
-
-
-module.exports = router;
+module.exports=router;

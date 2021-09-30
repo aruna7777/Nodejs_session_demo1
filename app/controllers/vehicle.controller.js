@@ -1,13 +1,13 @@
-const db =require('../models')
+const db = require('../models')
 const Vehicle = db.vehicle;
 
-exports.getAllVehicle = (req, res)=>{
+exports.getAllVehicle=(req,res)=>{
     Vehicle.findAll()
     .then(data =>{
         if (data.length != 0) {
             res.status(200).send(data);
-        } else {
-            res.status(401).send('Vehicles are empty');
+        } else { 
+            res.status(401).send('Users are empty');
         }
     })
     .catch(err =>{
@@ -15,12 +15,36 @@ exports.getAllVehicle = (req, res)=>{
             message: err.message || 'Not Found'
         });
     });
-    }
+}
 
-exports.getSingleVehicle = (req, res)=>{
+exports.getSingleVehicle=(req,res)=>{
     const id = req.params.id;
-
     Vehicle.findByPk(id)
+        .then(data => {
+            if (data.length != 0) {
+                res.status(200).send(data);
+            } else {
+                res.status(404).send('User is empty');;
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).send(
+                {
+                    message: err.message || 'Not Found'
+                }
+            );
+        });
+
+}
+
+exports.createVehicle= async (req,res)=>{
+    const vehicle = {
+        username: req.body.username,
+        password: req.body.password,
+        status: req.body.status,
+    }
+    await Vehicle.create(vehicle)
         .then(data => {
             if (data.length != 0) {
                 res.status(200).send(data);
@@ -36,17 +60,35 @@ exports.getSingleVehicle = (req, res)=>{
                 }
             );
         });
-    // res.status(200).send(' get Single Vehicle  Success')
-}
-exports.createVehicle = (req, res)=>{
-    res.status(200).send(' Successfuly create a vehicle');
-    
+
 }
 
-exports.updateVehicle = (req, res)=>{
-    res.status(200).send('Successfuly update a vehicle')
-}
+exports.updateVehicle= async (req,res)=>{
+    const vehicle = {
+        username: req.body.username,
+        password: req.body.password,
+        status: req.body.status,
+    }
+    await Vehicle.update(
+        vehicle, {
+        where: { id: req.body.id, }})
+        .then(data => {
+            if (data.length != 0) {
+                res.status(200).send(data);
+            } else {
+                res.status(404);
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).send(
+                {
+                    message: err.message || 'Not Found'
+                }
+            );
+        });
 
-exports.deleteVehicle = (req, res)=>{
-    res.status(200).send(' Successfuly delete a vehicle')
+}
+exports.deleteVehicle=(req,res)=>{
+    res.status(200).send('Delete  Success')
 }

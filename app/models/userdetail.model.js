@@ -1,11 +1,11 @@
 module.exports = (sequelize, Sequelize) =>{
-    const Userdetails = sequelize.define("userdetail",{
+    const Userdetail = sequelize.define("userdetail",{
         id:{
             type: Sequelize.INTEGER,
             allowNull:false,
             unique:true,
-            primaryKey:true,
-            autoIncrement:true
+            autoIncrement:true,
+            primaryKey:true
          },
          name_en:{
              type:Sequelize.STRING,
@@ -14,12 +14,12 @@ module.exports = (sequelize, Sequelize) =>{
          },
          name_si:{
             type:Sequelize.STRING,
-            allowNull:false,
+            allowNull:true,
             
         },
         name_ta:{
             type:Sequelize.STRING,
-            allowNull:false,
+            allowNull:true,
 
         },
          dob:{
@@ -34,7 +34,9 @@ module.exports = (sequelize, Sequelize) =>{
             type: Sequelize.TEXT,
             allowNull:false,
          }
-    })
 
-    return Userdetails;
+         
+
+    })
+    return Userdetail;
 }

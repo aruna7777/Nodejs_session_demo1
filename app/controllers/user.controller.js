@@ -1,12 +1,15 @@
-const db =require('../models')
+require('dotenv').config();
+const db = require('../models')
 const User = db.user;
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
-exports.getAllUser = (req, res)=>{
+exports.getAllUser=(req,res)=>{ 
     User.findAll()
     .then(data =>{
         if (data.length != 0) {
             res.status(200).send(data);
-        } else {
+        } else { 
             res.status(401).send('Users are empty');
         }
     })
@@ -15,17 +18,16 @@ exports.getAllUser = (req, res)=>{
             message: err.message || 'Not Found'
         });
     });
-    }
+}
 
-exports.getSingleUser = (req, res)=>{
+exports.getSingleUser=(req,res)=>{
     const id = req.params.id;
-
     User.findByPk(id)
         .then(data => {
             if (data.length != 0) {
                 res.status(200).send(data);
             } else {
-                res.status(404);
+                res.status(404).send('User is empty');;
             }
         })
         .catch(err => {
@@ -36,42 +38,57 @@ exports.getSingleUser = (req, res)=>{
                 }
             );
         });
-};
-   
-exports.createUser = async (req, res)=>{
+
+}
+
+exports.createUser= async (req,res)=>{
+    //validations
+    if(!req.body.username || !req.body.password){
+        res.status(404)
+        .send({
+            status:false,
+            message:"Email and Password can't be empty."
+        });
+    }
+
+
+    const password= req.body.password;
+    const encryptedPassword = await bcrypt.hash(password,saltRounds);
+
 
     const user = {
         username: req.body.username,
-        password: req.body.password,
-       
-        
+        password: encryptedPassword,
+        status: req.body.status,
     }
     await User.create(user)
         .then(data => {
-            if (data.length != 0) {
-                res.status(200).send(data);
-            } else {
-                res.status(404);
-            }
+            // if (data.length != 0) {
+            //     res.status(200).send(data);
+            // } else {
+            //     res.status(404);
+            // }
+            res.status(200).send({
+                status:true,
+                message:'Success'
+            });
         })
         .catch(err => {
-            console.log(err)
             res.status(500).send(
                 {
-                    message: err.message || 'Not Found'
+                    status:false,
+                    message: err.message || 'Error occurs creating the user'
                 }
             );
         });
 
-        // res.status(200).send(' Create  Success')
-    
 }
 
-exports.updateUser = async (req, res)=>{
+exports.updateUser= async (req,res)=>{
     const user = {
         username: req.body.username,
         password: req.body.password,
-        
+        status: req.body.status,
     }
     await User.update(
         user, {
@@ -91,9 +108,8 @@ exports.updateUser = async (req, res)=>{
                 }
             );
         });
-    // res.status(200).send(' Update  Success')
-}
 
-exports.deleteUser = (req, res)=>{
-    res.status(200).send('Successfuly delete a vehicle')
+}
+exports.deleteUser=(req,res)=>{
+    res.status(200).send('Delete  Success')
 }

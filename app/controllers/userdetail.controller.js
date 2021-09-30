@@ -1,13 +1,13 @@
-const db =require('../models')
-const UserDetail = db.userdetail;
+const db = require('../models')
+const Userdetail = db.userdetail;
 
-exports.getAllUserDetail = (req, res)=>{
-    UserDetail.findAll()
+exports.getAllUserDetail=(req,res)=>{
+    Userdetail.findAll()
     .then(data =>{
         if (data.length != 0) {
             res.status(200).send(data);
-        } else {
-            res.status(401).send('User details are empty');
+        } else { 
+            res.status(401).send('Users are empty');
         }
     })
     .catch(err =>{
@@ -15,12 +15,36 @@ exports.getAllUserDetail = (req, res)=>{
             message: err.message || 'Not Found'
         });
     });
-    }
+}
 
-exports.getSingleUserDetail = (req, res)=>{
+exports.getSingleUserDetail=(req,res)=>{
     const id = req.params.id;
+    Userdetail.findByPk(id)
+        .then(data => {
+            if (data.length != 0) {
+                res.status(200).send(data);
+            } else {
+                res.status(404).send('User is empty');;
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).send(
+                {
+                    message: err.message || 'Not Found'
+                }
+            );
+        });
 
-    UserDetail.findByPk(id)
+}
+
+exports.createUserDetail= async (req,res)=>{
+    const userdetail = {
+        username: req.body.username,
+        password: req.body.password,
+        status: req.body.status,
+    }
+    await Userdetail.create(userdetail)
         .then(data => {
             if (data.length != 0) {
                 res.status(200).send(data);
@@ -36,17 +60,35 @@ exports.getSingleUserDetail = (req, res)=>{
                 }
             );
         });
-    // res.status(200).send(' get Single UserDetail  Success')
-}
-exports.createUserDetail = (req, res)=>{
-    res.status(200).send('Successfuly create a user');
-    
+
 }
 
-exports.updateUserDetail = (req, res)=>{
-    res.status(200).send('Successfuly update a user')
-}
+exports.updateUserDetail= async (req,res)=>{
+    const userdetail = {
+        username: req.body.username,
+        password: req.body.password,
+        status: req.body.status,
+    }
+    await Userdetail.update(
+        userdetail, {
+        where: { id: req.body.id, }})
+        .then(data => {
+            if (data.length != 0) {
+                res.status(200).send(data);
+            } else {
+                res.status(404);
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).send(
+                {
+                    message: err.message || 'Not Found'
+                }
+            );
+        });
 
-exports.deleteUserDetail = (req, res)=>{
-    res.status(200).send('Successfuly delete a user')
+}
+exports.deleteUser=(req,res)=>{
+    res.status(200).send('Delete  Success')
 }

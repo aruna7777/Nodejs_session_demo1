@@ -4,22 +4,20 @@ module.exports = (sequelize, Sequelize) =>{
             type: Sequelize.INTEGER,
             allowNull:false,
             unique:true,
-            primaryKey:true,
-            autoIncrement:true
+            autoIncrement:true,
+            primaryKey:true
          },
         vehicle_type:{
              type:Sequelize.STRING,
              allowNull:false,
-             
-
          },
          status:{
             type: Sequelize.ENUM,
             values: ['active', 'pending', 'deleted'],
+            defaultValue:"active",
             allowNull:false,
 
          }
     })
-
     return Vehicle;
 }
